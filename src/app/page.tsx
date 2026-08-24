@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { Trophy, Clock3, Users, CalendarCheck, CircleDot, Sparkles } from "lucide-react";
 import { getTournament } from "@/lib/data";
+
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const { tournament: t, registered } = await getTournament(); const remaining = Math.max(t.capacity - registered, 0); const full = remaining === 0;
   const benefits = [[CalendarCheck,"Organized play","A well-run day with scheduled match times."],[Users,"Great competition","A welcoming field from recreational to advanced."],[CircleDot,"Fresh tennis balls","Quality balls supplied for tournament play."],[Trophy,"Winner’s prize","Play for the title—and a prize to be announced."],[Clock3,"Fast-match format","More action and less downtime on court."],[Sparkles,"A local tradition","Help launch a new community tournament series."]] as const;

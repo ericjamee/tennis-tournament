@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createSupabaseServer } from "@/lib/supabase-server";
+import { hasSupabasePublicConfig, TOURNAMENT_SLUG } from "@/lib/supabase-env";
 import { login, logout, updateTournament } from "./actions";
 import { PlayerControls } from "./player-controls";
 
@@ -23,14 +24,14 @@ export const metadata = { title: "Organizer | Provo Tennis" };
 
 export default async function Page({ searchParams }: PageProps) {
   const params = await searchParams;
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) return <SetupNotice/>;
+  if (!hasSupabasePublicConfig()) return <SetupNotice/>;
 
   const db = await createSupabaseServer();
   const { data: { user } } = await db.auth.getUser();
   if (!user) return <Login error={single(params.error)}/>;
 
   const [{ data: tournamentData }, { data: playerData }] = await Promise.all([
-    db.from("tournaments").select("*").eq("slug", "provo-labor-day-2026").single(),
+    db.from("tournaments").select("*").eq("slug", TOURNAMENT_SLUG).single(),
     db.from("registrations").select("*").order("created_at", { ascending: false }),
   ]);
   const tournament = tournamentData as TournamentRow | null;

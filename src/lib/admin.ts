@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServer } from "@/lib/supabase-server";
+import { hasSupabasePublicConfig } from "@/lib/supabase-env";
 
 export async function requireOrganizer() {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  if (!hasSupabasePublicConfig()) {
     redirect("/admin?error=Supabase%20is%20not%20configured");
   }
 
