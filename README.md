@@ -6,16 +6,16 @@ Registration site for recurring community tennis tournaments in Provo, Utah. Bui
 
 1. Install Node 20+ and pnpm, then run `pnpm install`.
 2. Copy `.env.example` to `.env.local`.
-3. Create a Supabase project. In its SQL Editor, run `supabase/migrations/202608240001_initial.sql`.
+3. Create a Supabase project. In its SQL Editor, run every file in `supabase/migrations/` in filename order.
 4. Add the project URL, anon key, and service-role key to `.env.local`. Never expose the service-role key with a `NEXT_PUBLIC_` prefix.
 5. In Supabase Authentication, create the organizer under Users. That email/password signs in at `/admin`.
 6. Run `pnpm dev` and open `http://localhost:3000`.
 
-Without Supabase variables the public site runs in preview mode. Form submissions show a demo confirmation but are not persisted. Adding the variables activates database-backed registration, duplicate protection, capacity-safe waitlisting, admin login, private player data, and CSV export.
+Without Supabase variables the public site runs in preview mode. Form submissions show a demo confirmation but are not persisted. Adding the variables activates database-backed registration, duplicate protection, numbered and capacity-safe waitlisting, admin login, private player data, editable tournament settings, player status and seed management, waitlist promotion, and CSV export.
 
 ## Database and security
 
-The migration creates reusable `tournaments` and `registrations` tables, Labor Day 2026 seed data, RLS policies, and a transactional registration function. It locks the tournament row while assigning the final place, so concurrent submissions cannot exceed capacity. Public users cannot read registrations. The service-role key is only used server-side.
+The migrations create reusable `tournaments` and `registrations` tables, Labor Day 2026 seed data, RLS policies, public-safe aggregate counts, and transactional registration, restoration, and promotion functions. They lock the tournament row while assigning the final place, so concurrent submissions cannot exceed capacity. Public users cannot read registrations. The service-role key is only used server-side.
 
 ## Deploy to Vercel
 
@@ -25,7 +25,7 @@ To add a custom domain later, open Project Settings → Domains, add the domain,
 
 ## Optional services
 
-- Resend: add `RESEND_API_KEY` and a verified `RESEND_FROM_EMAIL`. Registration remains functional without email configuration.
+- Resend: add `RESEND_API_KEY` and a verified `RESEND_FROM_EMAIL`. New players receive a registered or waitlisted confirmation. Registration remains functional if email is not configured or delivery fails.
 - Stripe: the schema supports `payment_method = 'stripe'`, but checkout is intentionally disabled. Add Checkout and webhook fulfillment before selecting it.
 
 ## Quality checks

@@ -34,6 +34,6 @@ export async function getTournament(): Promise<{ tournament: Tournament; registe
   const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
   const { data } = await db.from("tournaments").select("*").eq("slug", fallbackTournament.slug).single();
   const tournament = (data as Tournament) ?? fallbackTournament;
-  const { count } = await db.from("registrations").select("id", { count: "exact", head: true }).eq("tournament_id", tournament.id).in("status", ["registered", "confirmed"]);
-  return { tournament, registered: count ?? 0 };
+  const { data: count } = await db.rpc("get_tournament_registration_count", { p_tournament_id: tournament.id });
+  return { tournament, registered: typeof count === "number" ? count : 0 };
 }
