@@ -6,8 +6,10 @@ import { z } from "zod";
 import { requireOrganizer } from "@/lib/admin";
 import { createSupabaseServer } from "@/lib/supabase-server";
 
+const postgresUuid = z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, "Invalid record identifier");
+
 const tournamentSchema = z.object({
-  id: z.uuid(), name: z.string().trim().min(3).max(160), subtitle: z.string().trim().max(240),
+  id: postgresUuid, name: z.string().trim().min(3).max(160), subtitle: z.string().trim().max(240),
   description: z.string().trim().max(2000), date: z.iso.date(), start_time: z.string().regex(/^\d{2}:\d{2}$/),
   venue_name: z.string().trim().max(160), venue_address: z.string().trim().max(300), contact_email: z.email(),
   capacity: z.coerce.number().int().min(2).max(256), entry_fee: z.string().trim(),
@@ -62,8 +64,8 @@ export async function updateTournament(formData: FormData) {
 
 export async function updateRegistration(formData: FormData) {
   const { db } = await requireOrganizer();
-  const id = z.uuid().parse(formData.get("id"));
-  const tournamentId = z.uuid().parse(formData.get("tournament_id"));
+  const id = postgresUuid.parse(formData.get("id"));
+  const tournamentId = postgresUuid.parse(formData.get("tournament_id"));
   const intent = z.enum(["save_seed", "confirm", "withdraw", "restore", "mark_registered", "promote"]).parse(formData.get("intent"));
   let error: { message: string } | null = null;
   if (intent === "promote") ({ error } = await db.rpc("promote_waitlisted_registration", { p_registration_id: id }));
@@ -83,8 +85,8 @@ export async function updateRegistration(formData: FormData) {
 
 export async function deleteRegistration(formData: FormData) {
   const { db } = await requireOrganizer();
-  const id = z.uuid().parse(formData.get("id"));
-  const tournamentId = z.uuid().parse(formData.get("tournament_id"));
+  const id = postgresUuid.parse(formData.get("id"));
+  const tournamentId = postgresUuid.parse(formData.get("tournament_id"));
   const { error } = await db.from("registrations").delete().eq("id", id);
   if (error) adminRedirect("Could not delete the player", "error");
   await db.rpc("resequence_waitlist", { p_tournament_id: tournamentId });
