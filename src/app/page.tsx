@@ -27,10 +27,19 @@ const matchRules = [
   ["2 PTS", "Switch server every two points"],
 ] as const;
 
+const projectedSchedule = [
+  { time: "8:00 AM", label: "Check-in and short warm-up" },
+  { time: "8:30 AM", label: "Championship opening round begins" },
+  { time: "10:50 AM", label: "Championship and consolation quarterfinals" },
+  { time: "1:10 PM", label: "Championship and consolation semifinals" },
+  { time: "3:00 PM", label: "Championship and consolation finals" },
+] as const;
+
 export default async function Home() {
   const { tournament: t, registered } = await getTournament();
   const plannedVenue = t.venue_name || "Riverview Park";
-  const plannedAddress = t.venue_address || "4620 N 300 W, Provo, UT 84604";
+  const plannedAddress = t.venue_name && t.venue_address ? t.venue_address : "4620 N 300 W, Provo, UT 84604";
+  const displayedSchedule = t.schedule_finalized ? t.schedule : projectedSchedule;
   const remaining = Math.max(t.capacity - registered, 0);
   const full = remaining === 0;
   const benefits = [
@@ -150,7 +159,7 @@ export default async function Home() {
         <div className="schedule">
           <div className="eyebrow">{t.schedule_finalized ? "Official schedule" : "Tentative schedule"}</div>
           <h2>Match day</h2>
-          <div className="schedule-list">{t.schedule.map((s) => <div className="schedule-row" key={s.time}><span>{s.time}</span><span>{s.label}</span></div>)}</div>
+          <div className="schedule-list">{displayedSchedule.map((s) => <div className="schedule-row" key={s.time}><span>{s.time}</span><span>{s.label}</span></div>)}</div>
           <div className="venue-card">
             <MapPin size={28} aria-hidden="true" />
             <div><small>{t.venue_confirmed ? "Confirmed venue" : "Planned venue · reservation pending"}</small><b>{plannedVenue}</b><span>{plannedAddress}</span></div>
