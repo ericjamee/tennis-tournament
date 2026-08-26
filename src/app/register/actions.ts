@@ -56,6 +56,13 @@ export async function register(_: FormState, formData: FormData): Promise<FormSt
     p_registration: { ...parsed.data, rules_accepted: true, waiver_accepted: true, checkout_cancel_token: cancelToken },
   });
   if (error) {
+    console.error("Tournament registration RPC failed", {
+      code: error.code,
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+      tournamentId: tournament.id,
+    });
     if (error.message.includes("duplicate")) return { error: "You already have an active registration or checkout with that email." };
     return { error: "We couldn’t save your registration. Please try again." };
   }
