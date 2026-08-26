@@ -9,6 +9,7 @@ import {
   Users,
 } from "lucide-react";
 import { getTournament } from "@/lib/data";
+import { ENTRY_FEE, ENTRY_FEE_FAQ } from "@/lib/tournament-details";
 import TournamentBracket from "./tournament-bracket";
 
 export const dynamic = "force-dynamic";
@@ -40,6 +41,10 @@ export default async function Home() {
   const plannedVenue = t.venue_name || "Riverview Park";
   const plannedAddress = t.venue_name && t.venue_address ? t.venue_address : "4620 N 300 W, Provo, UT 84604";
   const displayedSchedule = t.schedule_finalized ? t.schedule : projectedSchedule;
+  const entryFee = t.entry_fee ?? ENTRY_FEE;
+  const displayedFaq = t.faq.some((item) => item.question === ENTRY_FEE_FAQ.question)
+    ? t.faq
+    : [...t.faq, ENTRY_FEE_FAQ];
   const remaining = Math.max(t.capacity - registered, 0);
   const full = remaining === 0;
   const benefits = [
@@ -70,7 +75,7 @@ export default async function Home() {
           <div className="fact"><span>Place</span><span>{plannedVenue}{t.venue_confirmed ? "" : " · planned"}</span></div>
           <div className="fact"><span>Field</span><span>{t.capacity} singles players</span></div>
           <div className="fact"><span>Matches</span><span>2 minimum</span></div>
-          <div className="fact"><span>Entry</span><span>{t.entry_fee == null ? "Price coming soon" : `$${t.entry_fee}`}</span></div>
+          <div className="fact"><span>Entry</span><span>${entryFee}</span></div>
         </aside>
       </section>
 
@@ -178,7 +183,7 @@ export default async function Home() {
       <section id="faq" className="section faq-section">
         <div className="eyebrow">Good to know</div>
         <h2 className="section-title">Questions, answered.</h2>
-        <div className="faq">{t.faq.map((item) => <details key={item.question}><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div>
+        <div className="faq">{displayedFaq.map((item) => <details key={item.question}><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div>
       </section>
     </main>
   );
