@@ -38,11 +38,11 @@ begin
   select * into t from public.tournaments where tournaments.id = p_tournament_id for update;
   if not found then raise exception 'tournament_not_found'; end if;
 
-  update public.registrations
+  update public.registrations as r
   set status = 'withdrawn'
-  where tournament_id = p_tournament_id
-    and status = 'pending_payment'
-    and created_at <= now() - interval '30 minutes';
+  where r.tournament_id = p_tournament_id
+    and r.status = 'pending_payment'
+    and r.created_at <= now() - interval '30 minutes';
 
   if exists(
     select 1 from public.registrations r

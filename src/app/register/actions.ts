@@ -45,16 +45,78 @@ export async function register(_: FormState, formData: FormData): Promise<FormSt
   const { createClient } = await import("@supabase/supabase-js");
   const db = createClient(url, secretKey);
   const { data: tournament, error: tournamentError } = await db.from("tournaments")
-    .select("id,name,date,venue_name,venue_address,entry_fee,payment_method")
+    .select("id,name,date,venue_name,venue_address,entry_fee,payment_method,registration_open,capacity")
     .eq("slug", TOURNAMENT_SLUG)
     .single();
   if (tournamentError || !tournament) return { error: "Registration is temporarily unavailable. Please try again soon." };
 
   const cancelToken = randomUUID();
-  const { data, error } = await db.rpc("register_for_tournament", {
+  let { data, error } = await db.rpc("register_for_tournament", {
     p_tournament_id: tournament.id,
     p_registration: { ...parsed.data, rules_accepted: true, waiver_accepted: true, checkout_cancel_token: cancelToken },
   });
+
+  // The original database function used an output field named `status`, which
+  // conflicts with an unqualified registrations.status reference in Postgres.
+  // Keep registration available while older databases receive the repair migration.
+  if (error?.code === "42702") {
+    const expiredAt = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+    const { error: cleanupError } = await db.from("registrations")
+      .update({ status: "withdrawn" })
+      .eq("tournament_id", tournament.id)
+      .eq("status", "pending_payment")
+      .lte("created_at", expiredAt);
+
+    const { data: duplicate, error: duplicateError } = await db.from("registrations")
+      .select("id")
+      .eq("tournament_id", tournament.id)
+      .ilike("email", parsed.data.email)
+      .neq("status", "withdrawn")
+      .limit(1)
+      .maybeSingle();
+
+    const { count: activeCount, error: countError } = await db.from("registrations")
+      .select("id", { count: "exact", head: true })
+      .eq("tournament_id", tournament.id)
+      .in("status", ["pending_payment", "registered", "confirmed"]);
+
+    if (cleanupError || duplicateError || countError) {
+      error = cleanupError ?? duplicateError ?? countError;
+    } else if (duplicate) {
+      return { error: "You already have an active registration or checkout with that email." };
+    } else {
+      const hasSpace = tournament.registration_open && (activeCount ?? 0) < tournament.capacity;
+      const fallbackStatus: "pending_payment" | "registered" | "waitlisted" = hasSpace
+        ? (tournament.payment_method === "stripe" ? "pending_payment" : "registered")
+        : "waitlisted";
+      let waitlistPosition: number | null = null;
+
+      if (fallbackStatus === "waitlisted") {
+        const { count, error: waitlistError } = await db.from("registrations")
+          .select("id", { count: "exact", head: true })
+          .eq("tournament_id", tournament.id)
+          .eq("status", "waitlisted");
+        if (waitlistError) error = waitlistError;
+        else waitlistPosition = (count ?? 0) + 1;
+      }
+
+      if (!error || error.code === "42702") {
+        const { data: inserted, error: insertError } = await db.from("registrations").insert({
+          tournament_id: tournament.id,
+          ...parsed.data,
+          email: parsed.data.email,
+          status: fallbackStatus,
+          waitlist_position: waitlistPosition,
+          waiver_accepted: true,
+          rules_accepted: true,
+          checkout_cancel_token: cancelToken,
+        }).select("id,status,waitlist_position").single();
+        data = inserted;
+        error = insertError;
+      }
+    }
+  }
+
   if (error) {
     console.error("Tournament registration RPC failed", {
       code: error.code,
