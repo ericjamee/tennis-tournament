@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useActionState } from "react";
 import { register, type FormState } from "./actions";
 const initial: FormState = {};
@@ -82,15 +83,15 @@ export function RegistrationForm({ waitlist = false }: { waitlist?: boolean }) {
         <div className="check">
           <input id="rules" name="rules_accepted" type="checkbox" required />
           <label htmlFor="rules">
-            I have read and agree to follow the tournament rules and organizer
-            decisions.
+            I have read and agree to the <Link href="/rules" target="_blank" rel="noreferrer">Tournament Rules</Link>,
+            including the scoring format and organizer decisions.
           </label>
         </div>
         <div className="check">
           <input id="waiver" name="waiver_accepted" type="checkbox" required />
           <label htmlFor="waiver">
-            I understand tennis involves risk and accept the tournament
-            liability waiver.
+            I have read, understand, and electronically agree to the <Link href="/waiver" target="_blank" rel="noreferrer">Participation
+            Waiver and Release of Liability</Link>.
           </label>
         </div>
       </section>
