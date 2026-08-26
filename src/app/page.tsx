@@ -9,7 +9,7 @@ import {
   Users,
 } from "lucide-react";
 import { getTournament } from "@/lib/data";
-import { ENTRY_FEE, ENTRY_FEE_FAQ } from "@/lib/tournament-details";
+import { ENTRY_FEE, ENTRY_FEE_FAQ, REFUND_FAQ } from "@/lib/tournament-details";
 import TournamentBracket from "./tournament-bracket";
 
 export const dynamic = "force-dynamic";
@@ -42,9 +42,10 @@ export default async function Home() {
   const plannedAddress = t.venue_name && t.venue_address ? t.venue_address : "4620 N 300 W, Provo, UT 84604";
   const displayedSchedule = t.schedule_finalized ? t.schedule : projectedSchedule;
   const entryFee = t.entry_fee ?? ENTRY_FEE;
-  const displayedFaq = t.faq.some((item) => item.question === ENTRY_FEE_FAQ.question)
-    ? t.faq
-    : [...t.faq, ENTRY_FEE_FAQ];
+  const currentFaq = t.faq.map((item) => item.question === REFUND_FAQ.question ? REFUND_FAQ : item);
+  const displayedFaq = currentFaq.some((item) => item.question === ENTRY_FEE_FAQ.question)
+    ? currentFaq
+    : [...currentFaq, ENTRY_FEE_FAQ];
   const remaining = Math.max(t.capacity - registered, 0);
   const full = remaining === 0;
   const benefits = [

@@ -9,6 +9,7 @@ type RegistrationEmail = {
   tournamentName: string;
   date: string;
   venue: string;
+  paymentReceived?: boolean;
 };
 
 const escapeHtml = (value: string) => value.replace(/[&<>'"]/g, (character) => ({
@@ -35,7 +36,7 @@ export async function sendRegistrationEmail(details: RegistrationEmail) {
       <p style="font-weight:700;color:#174d35">PROVO TENNIS</p>
       <h1>${waitlisted ? "You’re on the waitlist." : "You’re in!"}</h1>
       <p>Hi ${escapeHtml(details.name)},</p>
-      <p>${waitlisted ? "The player field is currently full, but your place in line is saved. We’ll email you if a spot opens." : "Your tournament registration is saved. We’ll send your match time, final court location, and payment details when they’re ready."}</p>
+      <p>${waitlisted ? "The player field is currently full, but your place in line is saved. We’ll email you if a spot opens." : details.paymentReceived ? "Your $35 payment is complete and your tournament spot is confirmed. We’ll send your match time and final court location when they’re ready." : "Your tournament registration is saved. We’ll send your match time and final court location when they’re ready."}</p>
       ${position}
       <p><strong>Date:</strong> ${escapeHtml(details.date)}<br><strong>Venue:</strong> ${escapeHtml(details.venue)}<br><strong>Registration:</strong> ${escapeHtml(details.registrationId)}</p>
       <p>See you on the courts,<br>Provo Tennis</p>
