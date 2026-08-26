@@ -1,4 +1,5 @@
-import { getSupabasePublicKey, getSupabaseUrl, TOURNAMENT_SLUG } from "@/lib/supabase-env";
+import "server-only";
+import { getSupabasePublicKey, getSupabaseSecretKey, getSupabaseUrl, TOURNAMENT_SLUG } from "@/lib/supabase-env";
 
 export type Tournament = {
   id: string; slug: string; name: string; subtitle: string; description: string;
@@ -21,6 +22,17 @@ export async function getTournament(): Promise<{ tournament: Tournament; registe
   if (error || !data) throw new Error(`Tournament could not be loaded: ${error?.message ?? "not found"}`);
 
   const tournament = data as Tournament;
+  const secretKey = getSupabaseSecretKey();
+  if (secretKey) {
+    const adminDb = createClient(url, secretKey);
+    const { count, error: countError } = await adminDb.from("registrations")
+      .select("id", { count: "exact", head: true })
+      .eq("tournament_id", tournament.id)
+      .in("status", ["registered", "confirmed"]);
+    if (countError) throw new Error(`Registration count could not be loaded: ${countError.message}`);
+    return { tournament, registered: count ?? 0 };
+  }
+
   const { data: count, error: countError } = await db.rpc("get_tournament_registration_count", {
     p_tournament_id: tournament.id,
   });
