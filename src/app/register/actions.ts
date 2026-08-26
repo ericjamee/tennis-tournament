@@ -26,7 +26,7 @@ export async function register(_:FormState,formData:FormData):Promise<FormState>
       registrationId:result.id,
       tournamentName:tournament.name,
       date:new Intl.DateTimeFormat("en-US",{dateStyle:"full",timeZone:"UTC"}).format(new Date(`${tournament.date}T12:00:00Z`)),
-      venue:tournament.venue_name||tournament.venue_address||"Provo, Utah",
+      venue:tournament.venue_name||tournament.venue_address||"Riverview Park (planned; reservation pending)",
     }); } catch (emailError) { console.error("Registration email failed",emailError); }
   });
   const position=result.waitlist_position?`&position=${result.waitlist_position}`:"";

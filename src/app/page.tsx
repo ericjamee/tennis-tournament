@@ -3,11 +3,13 @@ import {
   CalendarCheck,
   CircleDot,
   Clock3,
+  MapPin,
   Sparkles,
   Trophy,
   Users,
 } from "lucide-react";
 import { getTournament } from "@/lib/data";
+import TournamentBracket from "./tournament-bracket";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +29,8 @@ const matchRules = [
 
 export default async function Home() {
   const { tournament: t, registered } = await getTournament();
+  const plannedVenue = t.venue_name || "Riverview Park";
+  const plannedAddress = t.venue_address || "4620 N 300 W, Provo, UT 84604";
   const remaining = Math.max(t.capacity - registered, 0);
   const full = remaining === 0;
   const benefits = [
@@ -54,7 +58,7 @@ export default async function Home() {
           <div className="date-num">07</div>
           <div className="date-month">SEPTEMBER ’26</div>
           <div className="fact"><span>Day</span><span>Monday · Labor Day</span></div>
-          <div className="fact"><span>Place</span><span>{t.venue_confirmed ? t.venue_name : "Provo · Courts TBA"}</span></div>
+          <div className="fact"><span>Place</span><span>{plannedVenue}{t.venue_confirmed ? "" : " · planned"}</span></div>
           <div className="fact"><span>Field</span><span>{t.capacity} singles players</span></div>
           <div className="fact"><span>Matches</span><span>2 minimum</span></div>
           <div className="fact"><span>Entry</span><span>{t.entry_fee == null ? "Price coming soon" : `$${t.entry_fee}`}</span></div>
@@ -134,6 +138,8 @@ export default async function Home() {
         </div>
       </section>
 
+      <TournamentBracket />
+
       <section className="section">
         <div className="eyebrow">What you get</div>
         <h2 className="section-title">Everything you need for a great day of tennis.</h2>
@@ -145,6 +151,10 @@ export default async function Home() {
           <div className="eyebrow">{t.schedule_finalized ? "Official schedule" : "Tentative schedule"}</div>
           <h2>Match day</h2>
           <div className="schedule-list">{t.schedule.map((s) => <div className="schedule-row" key={s.time}><span>{s.time}</span><span>{s.label}</span></div>)}</div>
+          <div className="venue-card">
+            <MapPin size={28} aria-hidden="true" />
+            <div><small>{t.venue_confirmed ? "Confirmed venue" : "Planned venue · reservation pending"}</small><b>{plannedVenue}</b><span>{plannedAddress}</span></div>
+          </div>
         </div>
         <div className="prize"><Trophy size={48}/><h2>Play for Provo.</h2><p className="lead prize-lead">{t.prize_description || "Winner’s prize to be announced"}</p><p>Details will be shared as they’re finalized.</p></div>
       </section>
