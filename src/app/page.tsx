@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   CalendarCheck,
   CircleDot,
@@ -80,7 +81,7 @@ export default async function Home() {
         </aside>
       </section>
 
-      <div className="ticker"><div><span>ONE SERVE</span><span>●</span><span>EVERY POINT COUNTS</span><span>●</span><span>FOUR QUARTERS</span><span>●</span><span>TWO MATCHES MINIMUM</span></div></div>
+      <div className="ticker"><div><span>ONE SERVE</span><span>●</span><span>EVERY POINT COUNTS</span><span>●</span><span>WIN THE ALCARAZ NIKECOURT SHIRT</span><span>●</span><span>TWO MATCHES MINIMUM</span></div></div>
 
       <section className="section">
         <div className="eyebrow">Why Provo Tennis?</div>
@@ -171,7 +172,19 @@ export default async function Home() {
             <div><small>{t.venue_confirmed ? "Confirmed venue" : "Planned venue · reservation pending"}</small><b>{plannedVenue}</b><span>{plannedAddress}</span></div>
           </div>
         </div>
-        <div className="prize"><Trophy size={48}/><h2>Play for Provo.</h2><p className="lead prize-lead">{t.prize_description || "Winner’s prize to be announced"}</p><p>Details will be shared as they’re finalized.</p></div>
+        <div className="prize prize-feature">
+          <div className="prize-copy">
+            <div className="prize-kicker"><Trophy size={24}/> Champion’s prize</div>
+            <h2>Win the<br/>Vamos shirt.</h2>
+            <p className="lead prize-lead">The tournament champion takes home the Carlos Alcaraz Men’s NikeCourt Dri-FIT Tennis T-Shirt.</p>
+            <a className="prize-link" href="https://www.nike.com/t/carlos-alcaraz-mens-nikecourt-dri-fit-tennis-t-shirt-yecD6F7C/IM6121-647" target="_blank" rel="noreferrer">View the prize at Nike ↗</a>
+            <small>Winner selects an available size.</small>
+          </div>
+          <a className="prize-image" href="https://www.nike.com/t/carlos-alcaraz-mens-nikecourt-dri-fit-tennis-t-shirt-yecD6F7C/IM6121-647" target="_blank" rel="noreferrer" aria-label="View the Carlos Alcaraz NikeCourt shirt at Nike">
+            <Image src="/winner-prize-alcaraz-shirt.png" alt="Carlos Alcaraz Vamos NikeCourt Dri-FIT tennis shirt in Burgundy Ash" width={600} height={800} sizes="(max-width: 700px) 70vw, 24vw" />
+            <span>WINNER’S PRIZE</span>
+          </a>
+        </div>
       </section>
 
       <section className="section status-section">
