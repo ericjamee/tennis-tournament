@@ -159,7 +159,7 @@ export default async function Home() {
           <div className="court-plan">
             <b>22</b><span>total matches</span><i>÷</i><b>2</b><span>planned courts</span><i>≈</i><b>1</b><span>full day of tennis</span>
           </div>
-          <p className="format-note">Court count, individual start times, and the full order of play will be confirmed with the venue. The format is designed around two courts.</p>
+          <p className="format-note">The venue is confirmed. Individual start times and the full order of play will be emailed after registration closes. The format is designed around two courts.</p>
         </div>
 
         <div className="official-note">

@@ -137,7 +137,7 @@ export default function TournamentBracket() {
 
       <div className={styles.notice}>
         <b>Preliminary two-court order of play</b>
-        <span>Times are estimates, not assigned player start times. The final draw and schedule will be emailed after the venue reservation is confirmed.</span>
+        <span>Times are estimates, not assigned player start times. The final draw and schedule will be emailed after registration closes and the field is seeded.</span>
       </div>
 
       <div className={styles.scroller} tabIndex={0} aria-label="Horizontal championship tournament bracket">
