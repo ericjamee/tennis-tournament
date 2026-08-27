@@ -1,8 +1,8 @@
 import { RegistrationForm } from "./form";
 import { getTournament } from "@/lib/data";
-import { ENTRY_FEE } from "@/lib/tournament-details";
+import { ENTRY_FEE, EVENT_DATE_SHORT, EVENT_NAME } from "@/lib/tournament-details";
 export const metadata = {
-  title: "Register | Provo Labor Day Tennis Tournament",
+  title: "Register | " + EVENT_NAME,
 };
 export const dynamic = "force-dynamic";
 type PageProps = {
@@ -30,7 +30,7 @@ export default async function Page({ searchParams }: PageProps) {
         <p>
           {full
             ? "The field is full, but plans change. Join the waitlist and we’ll contact you if a spot opens. You will not be charged unless a spot becomes available."
-            : `Monday, September 7 · Provo, Utah · $${entryFee} entry · ${remaining} spots currently available. Two matches minimum, barring weather or withdrawals. Complete secure payment to confirm your spot.`}
+            : `${EVENT_DATE_SHORT} · Provo, Utah · $${entryFee} entry · ${remaining} spots currently available. Two matches minimum, barring weather or withdrawals. Complete secure payment to confirm your spot.`}
         </p>
       </div>
       <RegistrationForm waitlist={full} />

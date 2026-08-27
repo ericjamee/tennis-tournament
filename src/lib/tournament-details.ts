@@ -1,5 +1,10 @@
 export const ENTRY_FEE = 35;
 
+export const EVENT_NAME = "Provo Tennis Tournament";
+export const EVENT_DATE_LONG = "Saturday, September 19, 2026";
+export const EVENT_DATE_SHORT = "Saturday, September 19";
+export const EVENT_DATE_OG = "SEPT 19, 2026";
+
 export const ENTRY_FEE_FAQ = {
   question: "What does the $35 entry fee cover?",
   answer:

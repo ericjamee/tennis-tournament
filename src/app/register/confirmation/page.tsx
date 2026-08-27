@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { fulfillCheckoutSession } from "@/lib/payment-fulfillment";
-import { ENTRY_FEE } from "@/lib/tournament-details";
+import { ENTRY_FEE, EVENT_DATE_LONG, EVENT_NAME } from "@/lib/tournament-details";
 
 type PageProps = { searchParams: Promise<Record<string, string | string[] | undefined>> };
 export const metadata = { title: "You’re in! | Provo Tennis" };
@@ -60,10 +60,10 @@ function Confirmation({
   return <main className="confirmation">
     <div className="eyebrow centered">{paid ? "Payment received" : "Registration received"}</div>
     <h1>{waitlisted ? "You’re on the list!" : "You’re in! 🎾"}</h1>
-    <p className="lead">{waitlisted ? "We’ll contact you as soon as a spot opens. You have not been charged." : "Your spot in the Provo Labor Day Tennis Tournament is confirmed."}</p>
+    <p className="lead">{waitlisted ? "We’ll contact you as soon as a spot opens. You have not been charged." : `Your spot in the ${EVENT_NAME} is confirmed.`}</p>
     <div className="confirmation-box">
       <div className="confirmation-row"><b>Name</b><span>{name}</span></div>
-      <div className="confirmation-row"><b>Date</b><span>Monday, September 7, 2026</span></div>
+      <div className="confirmation-row"><b>Date</b><span>{EVENT_DATE_LONG}</span></div>
       <div className="confirmation-row"><b>Venue</b><span>Riverview Park · reservation pending</span></div>
       <div className="confirmation-row"><b>Status</b><span>{waitlisted ? "Waitlisted" : "Registered"}</span></div>
       {waitlisted && waitlistPosition && <div className="confirmation-row"><b>Waitlist position</b><span>#{waitlistPosition}</span></div>}

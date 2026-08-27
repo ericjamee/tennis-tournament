@@ -62,7 +62,7 @@ export default async function Home() {
       <section className="hero">
         <div className="hero-main">
           <div className="eyebrow">Inaugural event · Provo, Utah</div>
-          <h1>Labor Day<br/><em>Tennis</em><br/>Tournament</h1>
+          <h1>Provo<br/><em>Tennis</em><br/>Tournament</h1>
           <p className="hero-sub">{t.subtitle}</p>
           <div className="hero-actions">
             <Link className="button" href="/register">{full ? "Join waitlist" : "Register to play"} →</Link>
@@ -70,9 +70,9 @@ export default async function Home() {
           </div>
         </div>
         <aside className="hero-side">
-          <div className="date-num">07</div>
+          <div className="date-num">19</div>
           <div className="date-month">SEPTEMBER ’26</div>
-          <div className="fact"><span>Day</span><span>Monday · Labor Day</span></div>
+          <div className="fact"><span>Day</span><span>Saturday</span></div>
           <div className="fact"><span>Place</span><span>{plannedVenue}{t.venue_confirmed ? "" : " · planned"}</span></div>
           <div className="fact"><span>Field</span><span>{t.capacity} singles players</span></div>
           <div className="fact"><span>Matches</span><span>2 minimum</span></div>

@@ -7,7 +7,7 @@ import { z } from "zod";
 import { sendRegistrationEmail } from "@/lib/email";
 import { getSupabaseSecretKey, getSupabaseUrl, TOURNAMENT_SLUG } from "@/lib/supabase-env";
 import { getSiteUrl, getStripe } from "@/lib/stripe";
-import { ENTRY_FEE } from "@/lib/tournament-details";
+import { ENTRY_FEE, EVENT_DATE_LONG } from "@/lib/tournament-details";
 
 const schema = z.object({
   first_name: z.string().trim().min(1, "First name is required").max(80),
@@ -153,7 +153,7 @@ export async function register(_: FormState, formData: FormData): Promise<FormSt
             unit_amount: ENTRY_FEE * 100,
             product_data: {
               name: tournament.name,
-              description: "Singles tournament entry · Monday, September 7, 2026",
+              description: `Singles tournament entry · ${EVENT_DATE_LONG}`,
             },
           },
         }],

@@ -15,7 +15,7 @@ Without Supabase variables the public site runs in preview mode. Form submission
 
 ## Database and security
 
-The migrations create reusable `tournaments` and `registrations` tables, Labor Day 2026 seed data, RLS policies, public-safe aggregate counts, and transactional registration, restoration, and promotion functions. They lock the tournament row while assigning the final place, so concurrent submissions cannot exceed capacity. Public users cannot read registrations. The service-role key is only used server-side.
+The migrations create reusable `tournaments` and `registrations` tables, September 2026 tournament seed data, RLS policies, public-safe aggregate counts, and transactional registration, restoration, and promotion functions. They lock the tournament row while assigning the final place, so concurrent submissions cannot exceed capacity. Public users cannot read registrations. The service-role key is only used server-side.
 
 ## Deploy to Vercel
 
