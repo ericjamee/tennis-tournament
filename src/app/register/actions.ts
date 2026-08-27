@@ -7,7 +7,7 @@ import { z } from "zod";
 import { sendRegistrationEmail } from "@/lib/email";
 import { getSupabaseSecretKey, getSupabaseUrl, TOURNAMENT_SLUG } from "@/lib/supabase-env";
 import { getSiteUrl, getStripe } from "@/lib/stripe";
-import { ENTRY_FEE, EVENT_DATE_LONG } from "@/lib/tournament-details";
+import { ENTRY_FEE, EVENT_DATE_LONG, VENUE_NAME } from "@/lib/tournament-details";
 
 const schema = z.object({
   first_name: z.string().trim().min(1, "First name is required").max(80),
@@ -195,7 +195,7 @@ export async function register(_: FormState, formData: FormData): Promise<FormSt
         registrationId: result.id,
         tournamentName: tournament.name,
         date: new Intl.DateTimeFormat("en-US", { dateStyle: "full", timeZone: "UTC" }).format(new Date(`${tournament.date}T12:00:00Z`)),
-        venue: tournament.venue_name || tournament.venue_address || "Riverview Park (planned; reservation pending)",
+        venue: tournament.venue_name || tournament.venue_address || VENUE_NAME,
       });
     } catch (emailError) {
       console.error("Registration email failed", emailError);

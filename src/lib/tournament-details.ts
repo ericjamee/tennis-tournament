@@ -5,10 +5,16 @@ export const EVENT_DATE_LONG = "Saturday, September 19, 2026";
 export const EVENT_DATE_SHORT = "Saturday, September 19";
 export const EVENT_DATE_OG = "SEPT 19, 2026";
 
+export const VENUE_NAME = "Riverview Park";
+export const VENUE_ADDRESS = "4620 N 300 W, Provo, UT 84604";
+
+export const SUDDEN_DEATH_RULE =
+  "If the match is tied at two quarters apiece after four quarters, sudden death begins. The first player to win two consecutive points wins the match.";
+
 export const ENTRY_FEE_FAQ = {
   question: "What does the $35 entry fee cover?",
   answer:
-    "The $35 fee helps players commit to showing up and covers event costs; it is not intended to make a profit. The tournament is budgeted at roughly $600: about $200 for court rental, plus required event insurance, fresh tennis balls, prizes, and basic supplies. Even a full 16-player field brings in only $560.",
+    "The $35 fee helps players commit to showing up and supports the tournament’s overall budget of approximately $600.",
 } as const;
 
 export const REFUND_FAQ = {

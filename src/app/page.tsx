@@ -10,7 +10,14 @@ import {
   Users,
 } from "lucide-react";
 import { getTournament } from "@/lib/data";
-import { ENTRY_FEE, ENTRY_FEE_FAQ, REFUND_FAQ } from "@/lib/tournament-details";
+import {
+  ENTRY_FEE,
+  ENTRY_FEE_FAQ,
+  REFUND_FAQ,
+  SUDDEN_DEATH_RULE,
+  VENUE_ADDRESS,
+  VENUE_NAME,
+} from "@/lib/tournament-details";
 import TournamentBracket from "./tournament-bracket";
 
 export const dynamic = "force-dynamic";
@@ -39,11 +46,18 @@ const projectedSchedule = [
 
 export default async function Home() {
   const { tournament: t, registered } = await getTournament();
-  const plannedVenue = t.venue_name || "Riverview Park";
-  const plannedAddress = t.venue_name && t.venue_address ? t.venue_address : "4620 N 300 W, Provo, UT 84604";
+  const venueName = t.venue_name || VENUE_NAME;
+  const venueAddress = t.venue_name && t.venue_address ? t.venue_address : VENUE_ADDRESS;
+  const venueConfirmed = t.venue_confirmed || venueName === VENUE_NAME;
   const displayedSchedule = t.schedule_finalized ? t.schedule : projectedSchedule;
   const entryFee = t.entry_fee ?? ENTRY_FEE;
-  const currentFaq = t.faq.map((item) => item.question === REFUND_FAQ.question ? REFUND_FAQ : item);
+  const currentFaq = t.faq.map((item) =>
+    item.question === REFUND_FAQ.question
+      ? REFUND_FAQ
+      : item.question === ENTRY_FEE_FAQ.question
+        ? ENTRY_FEE_FAQ
+        : item,
+  );
   const displayedFaq = currentFaq.some((item) => item.question === ENTRY_FEE_FAQ.question)
     ? currentFaq
     : [...currentFaq, ENTRY_FEE_FAQ];
@@ -74,7 +88,7 @@ export default async function Home() {
           <div className="date-num">19</div>
           <div className="date-month">SEPTEMBER ’26</div>
           <div className="fact"><span>Day</span><span>Saturday</span></div>
-          <div className="fact"><span>Place</span><span>{plannedVenue}{t.venue_confirmed ? "" : " · planned"}</span></div>
+          <div className="fact"><span>Place</span><span>{venueName}{venueConfirmed ? " · confirmed" : " · planned"}</span></div>
           <div className="fact"><span>Field</span><span>{t.capacity} singles players</span></div>
           <div className="fact"><span>Matches</span><span>2 minimum</span></div>
           <div className="fact"><span>Entry</span><span>${entryFee}</span></div>
@@ -129,7 +143,7 @@ export default async function Home() {
           <div className="sudden-death">
             <span>MATCH TIED 2–2?</span>
             <b>SUDDEN DEATH</b>
-            <strong>First to win <em>2 points in a row</em> wins the match.</strong>
+            <strong>{SUDDEN_DEATH_RULE}</strong>
           </div>
         </div>
 
@@ -169,7 +183,7 @@ export default async function Home() {
           <div className="schedule-list">{displayedSchedule.map((s) => <div className="schedule-row" key={s.time}><span>{s.time}</span><span>{s.label}</span></div>)}</div>
           <div className="venue-card">
             <MapPin size={28} aria-hidden="true" />
-            <div><small>{t.venue_confirmed ? "Confirmed venue" : "Planned venue · reservation pending"}</small><b>{plannedVenue}</b><span>{plannedAddress}</span></div>
+            <div><small>{venueConfirmed ? "Confirmed venue" : "Planned venue"}</small><b>{venueName}</b><span>{venueAddress}</span></div>
           </div>
         </div>
         <div className="prize prize-feature">
